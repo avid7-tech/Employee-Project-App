@@ -20,7 +20,7 @@ class AddressSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     
     address = AddressSerializer(required=True)
-
+    
     class Meta:
         model = Employee
         fields = '__all__'
