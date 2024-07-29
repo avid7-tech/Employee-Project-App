@@ -14,7 +14,7 @@ class Address(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=240, unique=True)
-    phone = models.JSONField()
+    phone = models.JSONField(default=list)
 
     company = models.TextField(max_length=240)
     role = models.CharField(max_length=240)

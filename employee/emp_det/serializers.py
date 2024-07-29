@@ -26,6 +26,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_name(self, value):
+        logger.info("NAME: %s", value)
         if not re.match(r'^[a-zA-Z\s]+$', value):
             raise serializers.ValidationError("Name should only contain letters and spaces.")
         
@@ -48,11 +49,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         
         return value
 
-    def to_internal_value(self, value):
+    def validate(self, value):
         expected_fields = [field.name for field in self.Meta.model._meta.fields]
         expected_fields = set(expected_fields) - {'id'}
 
-        provided_fields = set(value.keys())
+        provided_fields = set(self.initial_data.keys())
         
         logger.info("Validating data: %s", value)
         logger.info(f"Expected ->  {expected_fields}")
