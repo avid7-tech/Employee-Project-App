@@ -147,3 +147,9 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'emp_det.authentication.CustomAuthentication',
+    ],
+}
