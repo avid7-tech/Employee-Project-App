@@ -36,7 +36,6 @@ class CustomAuthentication(BaseAuthentication):
             code_one, code_two = code.split(' ')
             if code_one.lower() == 'basic':
                 decoded_credentials = base64.b64decode(code_two).decode('utf-8')
-                logger.info("(authentication)Decoded code: %s", decoded_credentials)
 
         username = request.GET.get('username') or request.data.get('username')
         if not username and decoded_credentials:
@@ -48,9 +47,6 @@ class CustomAuthentication(BaseAuthentication):
             logger.warning("No username provided in the request (authentication)")
             return None
         
-        # details to check
-        logger.info("to check username: %s", username)
-        logger.info("to check password: %s", password)
         
         if not username:
             logger.warning("No username provided in the request (authentication)")
