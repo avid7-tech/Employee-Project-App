@@ -4,7 +4,6 @@ import re
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,6 +78,19 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 pk=instance.address.pk
             )
         return super().update(instance, validated_data)
+
+# GET Serializers - (AddressGetSerializer and EmployeeGetSerializer)
+class AddressGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['add_line','state','hometown','pincode']
+
+class EmployeeGetSerializer(serializers.ModelSerializer):
+    address = AddressGetSerializer(required=True)
+    
+    class Meta:
+        model = Employee
+        fields = ['name','address','role','phone','company']
 
 
 class ProjectSerializer(serializers.ModelSerializer):

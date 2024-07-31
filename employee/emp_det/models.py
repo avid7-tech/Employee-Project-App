@@ -1,25 +1,24 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-import re
 
 # Create your models here.
 class Address(models.Model):
-    add_line = models.CharField(max_length=255)
-    state = models.CharField(max_length=100)
-    hometown = models.CharField(max_length=100)
-    pincode = models.CharField(max_length=6)
+    add_line = models.CharField(max_length=255, blank=True, null=False)
+    state = models.CharField(max_length=100, blank=True, null=False)
+    hometown = models.CharField(max_length=100, blank=True, null=False)
+    pincode = models.CharField(max_length=6, blank=True, null=False)
 
     def __str__(self):
         return f"{self.add_line}, {self.hometown}, {self.state}, {self.pincode}"
 
 class Employee(models.Model):
-    name = models.CharField(max_length=240, unique=True)
-    phone = models.JSONField(default=list)
+    name = models.CharField(max_length=240, unique=True, null=False, blank=True)
+    phone = models.JSONField(default=list, null=False, blank=True)
 
-    company = models.TextField(max_length=240)
-    role = models.CharField(max_length=240)
-    active = models.BooleanField(default=True)
-    address = models.OneToOneField(Address, on_delete=models.CASCADE, null=True, blank=True)
+    company = models.TextField(max_length=240, null=False, blank=True)
+    role = models.CharField(max_length=240, null=False, blank=True)
+    active = models.BooleanField(default=True, null=False, blank=True)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE, null=False, blank=True)
     
     def __str__(self):
         return self.name
@@ -30,13 +29,13 @@ class Project(models.Model):
         ('Done', 'Done'),
     )
     
-    title = models.CharField(max_length=240, unique=True)
-    description = models.TextField(max_length=240)
+    title = models.CharField(max_length=240, unique=True, null=False, blank=True)
+    description = models.TextField(max_length=240, null=False, blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    duration = models.IntegerField(default=0)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='projects')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Ongoing')
+    duration = models.IntegerField(default=0, null=False, blank=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='projects', null=False, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Ongoing', null=False, blank=True)
 
     def save(self, *args, **kwargs):
         if self.start_date and self.end_date:
