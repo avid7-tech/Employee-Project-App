@@ -79,18 +79,36 @@ class EmployeeSerializer(serializers.ModelSerializer):
             )
         return super().update(instance, validated_data)
 
+
 # GET Serializers - (AddressGetSerializer and EmployeeGetSerializer)
 class AddressGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
+        # fields = []
         fields = ['add_line','state','hometown','pincode']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Check if all fields are empty
+        if all(value in [None, '', []] for value in representation.values()):
+            return {"message": "empty"}
+        return representation
+
 
 class EmployeeGetSerializer(serializers.ModelSerializer):
     address = AddressGetSerializer(required=True)
     
     class Meta:
         model = Employee
+        # fields = ['address']
         fields = ['name','address','role','phone','company']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Check if all fields are empty
+        if all(value in [None, '', []] for value in representation.values()):
+            return {"message": "empty"}
+        return representation
 
 
 class ProjectSerializer(serializers.ModelSerializer):
