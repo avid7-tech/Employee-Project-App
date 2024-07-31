@@ -97,15 +97,27 @@ class AddressGetSerializer(serializers.ModelSerializer):
 
 class EmployeeGetSerializer(serializers.ModelSerializer):
     address = AddressGetSerializer(required=True)
+    project_count = serializers.SerializerMethodField()
+    ongoing_project_count = serializers.SerializerMethodField()
+    completed_project_count = serializers.SerializerMethodField()
+
     
     class Meta:
         model = Employee
         # fields = ['address']
-        fields = ['name','address','role','phone','company']
+        fields = ['name','address','role','phone','company','project_count','ongoing_project_count','completed_project_count']
     
+    def get_project_count(self, obj):
+        return obj.projects.count()
+
+    def get_ongoing_project_count(self, obj):
+        return obj.projects.filter(status='Ongoing').count()
+
+    def get_completed_project_count(self, obj):
+        return obj.projects.filter(status='Done').count()
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        # Check if all fields are empty
         if all(value in [None, '', []] for value in representation.values()):
             return {"message": "empty"}
         return representation

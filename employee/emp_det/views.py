@@ -10,7 +10,6 @@ from emp_det.authentication import CustomAuthentication
 
 logger = logging.getLogger(__name__)
 
-
 class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     # queryset = Employee.objects.all()
     queryset = Employee.objects.filter(active=True)
