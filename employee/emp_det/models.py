@@ -18,7 +18,7 @@ class Employee(models.Model):
     company = models.TextField(max_length=240, null=False, blank=True)
     role = models.CharField(max_length=240, null=False, blank=True)
     active = models.BooleanField(default=True, null=False, blank=True)
-    address = models.OneToOneField(Address, on_delete=models.CASCADE, null=False, blank=True)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE, null=False, blank=True, default=1)
     
     def __str__(self):
         return self.name
