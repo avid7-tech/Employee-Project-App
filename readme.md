@@ -78,5 +78,3 @@
 - **Address Model**
   - Fields: add_line, state, hometown, pincode.
   - Validates pincode length and state format.
-
-This summary now includes custom middleware functionalities, along with other details of your project.
