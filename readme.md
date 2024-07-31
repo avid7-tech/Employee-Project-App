@@ -1,4 +1,4 @@
-Here’s an updated summary including custom middleware:
+##Functionalities:
 
 ### Custom Middleware
 
