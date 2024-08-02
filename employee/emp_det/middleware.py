@@ -11,8 +11,8 @@ class AuthenticationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        logger.info("Request Incoming: %s %s", request.method, request.get_full_path())
-        logger.info("Request Headers: %s", dict(request.headers))
+        # logger.info("Request Incoming: %s %s", request.method, request.get_full_path())
+        # logger.info("Request Headers: %s", dict(request.headers))
         
         code = request.headers.get('Authorization')
         logger.info("code: %s", code)

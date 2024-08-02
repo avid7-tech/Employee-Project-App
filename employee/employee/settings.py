@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'emp_det',
     'rest_framework',
-    'rest_framework_simplejwt',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'emp_det.middleware.AuthenticationMiddleware',
+    # 'emp_det.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -150,7 +150,29 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'emp_det.authentication.CustomAuthentication',
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'emp_det.authentication.CustomAuthentication',
+    # ],
+    # 'DEFAULT_SCHEMA_CLASS': {'drf_spectacular.opneapi.AuthSchema'},
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Django DRF Employee',
+    'DESCRIPTION': 'API documentation for Django DRF Employee',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SECURITY': [
+        {
+            'BasicAuth': []
+        }
     ],
+    'COMPONENTS': {
+        'SECURITY_SCHEMES': {
+            'BasicAuth': {
+                'TYPE': 'http',
+                'SCHEME': 'basic'
+            }
+        }
+    }
 }

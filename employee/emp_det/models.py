@@ -19,9 +19,14 @@ class Employee(models.Model):
     role = models.CharField(max_length=240, null=False, blank=True)
     active = models.BooleanField(default=True, null=False, blank=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE, null=False, blank=True, default=1)
-    
+
     def __str__(self):
         return self.name
+
+    def delete(self, *args, **kwargs):
+        if self.address:
+            self.address.delete()
+        super().delete(*args, **kwargs)
 
 class Project(models.Model):
     STATUS_CHOICES = (

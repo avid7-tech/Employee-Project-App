@@ -3,22 +3,11 @@ from .models import Employee, Project, Address
 import re
 import logging
 
+
 logger = logging.getLogger(__name__)
 
+
 class AddressSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Address model.
-    It validates the pincode to be exactly 6 digits.
-
-    Args:
-        value (str): The pincode to be validated.
-
-    Returns:
-        str: The validated pincode.
-
-    Raises:
-        serializers.ValidationError: If the pincode is not exactly 6 digits.
-    """
     class Meta:
         model = Address
         fields = '__all__'
@@ -32,8 +21,6 @@ class AddressSerializer(serializers.ModelSerializer):
         if not re.match(r'^[a-zA-Z\s]+$', value):
             raise serializers.ValidationError("State should only contain letters and spaces.")
         return value
-    
-    
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -79,18 +66,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return value
     
     def validate(self, value):
-        """
-        Validates the provided data against the expected fields for the model.
-
-        Args:
-            value (dict): The data to be validated.
-
-        Raises:
-            serializers.ValidationError: If the fields in the request do not match the expected fields.
-
-        Returns:
-            dict: The validated data.
-        """
         expected_fields = [field.name for field in self.Meta.model._meta.fields]
         expected_fields = set(expected_fields) - {'id'}
 
@@ -138,30 +113,6 @@ class AddressGetSerializer(serializers.ModelSerializer):
 
 
 class EmployeeGetSerializer(serializers.ModelSerializer):
-    """
-    Serializer for retrieving an employee's data along with their address,
-    project count, ongoing project count, and completed project count.
-
-    Args:
-        instance (Employee): The instance of the Employee model to be serialized.
-
-    Returns:
-        dict: A dictionary containing the serialized data of the employee, their address,
-        project count, ongoing project count, and completed project count.
-
-    Raises:
-        None
-
-    Additional Methods:
-        get_project_count(obj): Returns the count of projects associated with the employee.
-        get_ongoing_project_count(obj): Returns the count of ongoing projects associated with the employee.
-        get_completed_project_count(obj): Returns the count of completed projects associated with the employee.
-
-    to_representation(self, instance):
-        Checks if all fields in the representation are empty and returns an empty message if so.
-        Otherwise, returns the serialized representation of the instance.
-    """
-
     address = AddressGetSerializer(required=True)
     project_count = serializers.SerializerMethodField()
     ongoing_project_count = serializers.SerializerMethodField()
