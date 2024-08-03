@@ -153,7 +153,6 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'emp_det.authentication.CustomAuthentication',
     # ],
-    # 'DEFAULT_SCHEMA_CLASS': {'drf_spectacular.opneapi.AuthSchema'},
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 

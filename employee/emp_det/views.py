@@ -10,7 +10,6 @@ from django.http import JsonResponse
 
 from openpyxl import Workbook
 from rest_framework.views import APIView
-from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
@@ -28,14 +27,14 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
         logger.info("request user: %s", user)
         logger.info("request auth: %s", auth)
         
-        if not user.is_authenticated:
-            logger.warning("Unauthenticated access attempt by user: %s", user)
-            return self.handle_unauthenticated_user(request)
+        # if not user.is_authenticated:
+        #     logger.warning("Unauthenticated access attempt by user: %s", user)
+        #     return self.handle_unauthenticated_user(request)
         
         return self.list(request, *args, **kwargs)
 
-    def handle_unauthenticated_user(self, request):
-        return JsonResponse({'detail': 'Authentication required'}, status=401)
+    # def handle_unauthenticated_user(self, request):
+    #     return JsonResponse({'detail': 'Authentication required'}, status=401)
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -89,6 +88,40 @@ class EmployeeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     lookup_field = 'pk'
     # authentication_classes = [CustomAuthentication]
     # permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 class ProjectListCreateAPIView(generics.ListCreateAPIView):

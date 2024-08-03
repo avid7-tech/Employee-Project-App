@@ -1,5 +1,12 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from .managers import SoftDeleteManager
+
+class SoftDeleteModel(models.Model):
+    is_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
 
 # Create your models here.
 class Address(models.Model):
@@ -11,7 +18,7 @@ class Address(models.Model):
     def __str__(self):
         return f"{self.add_line}, {self.hometown}, {self.state}, {self.pincode}"
 
-class Employee(models.Model):
+class Employee(SoftDeleteModel):
     name = models.CharField(max_length=240, unique=True, null=False, blank=True)
     phone = models.JSONField(default=list, null=False, blank=True)
 
@@ -20,15 +27,34 @@ class Employee(models.Model):
     active = models.BooleanField(default=True, null=False, blank=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE, null=False, blank=True, default=1)
 
-    def __str__(self):
-        return self.name
-
     def delete(self, *args, **kwargs):
         if self.address:
             self.address.delete()
         super().delete(*args, **kwargs)
 
-class Project(models.Model):
+    objects = SoftDeleteManager()  # Use custom manager
+
+    def soft_delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        self.is_deleted = False
+        self.save()
+
+    @staticmethod
+    def all_objects():
+        return Employee.objects.all_objects()
+
+    @staticmethod
+    def deleted_objects():
+        return Employee.objects.deleted_objects()
+
+
+    def __str__(self):
+        return self.name
+
+class Project(SoftDeleteModel):
     STATUS_CHOICES = (
         ('Ongoing', 'Ongoing'),
         ('Done', 'Done'),
@@ -48,6 +74,22 @@ class Project(models.Model):
             if self.duration < 0:
                 raise ValidationError("End date must be after the start date.")
         super().save(*args, **kwargs)
+    
+    objects = SoftDeleteManager()  # Use custom manager
+
+    def delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.save()
+
+    @staticmethod
+    def all_objects():
+        return Project.objects.all_objects()
+
+    @staticmethod
+    def deleted_objects():
+        return Project.objects.deleted_objects()
+
+    
 
     def __str__(self):
         return self.title
