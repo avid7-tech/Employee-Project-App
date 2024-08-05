@@ -125,11 +125,18 @@ class EmployeeRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
 
 
 class ProjectListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Project.objects.all()
     # authentication_classes = [CustomAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        queryset = Project.objects.filter()
+        self.emp_found = not queryset.exists()
+        # logger.info("(get_queryset)queryset: %s", queryset)
+        return queryset
     
     def list(self, request, *args, **kwargs):
         queryset = Project.objects.all()
@@ -161,11 +168,32 @@ class ProjectListCreateAPIView(generics.ListCreateAPIView):
 
 
 class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     lookup_field = 'pk'
     # authentication_classes = [CustomAuthentication]
     # permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EmployeeReportAPIView(APIView):
@@ -210,7 +238,3 @@ class EmployeeReportAPIView(APIView):
         wb.save(response)
         
         return response
-
-class RedirectToEmployeeListView(APIView):
-    def get(self, request, *args, **kwargs):
-        return redirect('employee-list-create')

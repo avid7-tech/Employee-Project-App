@@ -5,7 +5,6 @@ from .views import (
     ProjectListCreateAPIView,
     ProjectRetrieveUpdateDestroyAPIView,
     EmployeeReportAPIView,
-    RedirectToEmployeeListView
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -19,5 +18,4 @@ urlpatterns = [
     path('api/schema/docs', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     
     path('api/employees/reports/', EmployeeReportAPIView.as_view(), name='employee-report'),
-    path('api/employees/redirect/', RedirectToEmployeeListView.as_view(), name='redirect_to_employee_list'),
 ]

@@ -89,7 +89,5 @@ class Project(SoftDeleteModel):
     def deleted_objects():
         return Project.objects.deleted_objects()
 
-    
-
     def __str__(self):
         return self.title
