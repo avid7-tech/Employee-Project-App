@@ -27,12 +27,12 @@ class Employee(SoftDeleteModel):
     active = models.BooleanField(default=True, null=False, blank=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE, null=False, blank=True, default=1)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs):  
         if self.address:
             self.address.delete()
         super().delete(*args, **kwargs)
 
-    objects = SoftDeleteManager()  # Use custom manager
+    objects = SoftDeleteManager()
 
     def soft_delete(self, *args, **kwargs):
         self.is_deleted = True
@@ -75,7 +75,7 @@ class Project(SoftDeleteModel):
                 raise ValidationError("End date must be after the start date.")
         super().save(*args, **kwargs)
     
-    objects = SoftDeleteManager()  # Use custom manager
+    objects = SoftDeleteManager()
 
     def delete(self, *args, **kwargs):
         self.is_deleted = True

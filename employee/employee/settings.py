@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'emp_det',
     'rest_framework',
     'drf_spectacular',
+    'django_pdb',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django_pdb.middleware.PdbMiddleware',
 ]
 
 ROOT_URLCONF = 'employee.urls'
