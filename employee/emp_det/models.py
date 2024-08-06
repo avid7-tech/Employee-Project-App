@@ -47,6 +47,10 @@ class Employee(SoftDeleteModel):
         return Employee.objects.all_objects()
 
     @staticmethod
+    def get_all_active_employees():
+        return Employee.objects.get_all_active_employees()
+
+    @staticmethod
     def deleted_objects():
         return Employee.objects.deleted_objects()
 

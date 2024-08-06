@@ -47,7 +47,7 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
         return Response(serializer.data)
 
     def get_queryset(self):
-        queryset = Employee.objects.filter(active=True)
+        queryset = Employee.get_all_active_employees()
         self.emp_found = not queryset.exists()
         # logger.info("(get_queryset)queryset: %s", queryset)
         return queryset

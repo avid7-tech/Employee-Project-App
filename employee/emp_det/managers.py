@@ -15,7 +15,18 @@ class SoftDeleteQuerySet(models.QuerySet):
 
     def dead(self):
         return self.filter(is_deleted=True)
+    
+    
 
 class SoftDeleteManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(is_deleted=False)
+        return SoftDeleteQuerySet(self.model, using=self._db).alive()
+
+    def get_all_active_employees(self):
+        return self.get_queryset().filter(active=True)
+
+    def get_all_objects(self):
+        return self.get_queryset().alive()
+
+    def deleted_objects(self):
+        return self.get_queryset().dead()
